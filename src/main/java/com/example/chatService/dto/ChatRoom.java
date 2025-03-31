@@ -22,7 +22,7 @@ public class ChatRoom {
         this.roomId = roomId;
         this.name = name;
     }
-
+    //만약 타입이 ENTER이면 세션에 추가후 메시지를 브로드캐스트
     public void handlerActions(WebSocketSession session, ChatMessage chatMessage, ChatService chatService) {
         if (chatMessage.getType().equals(ChatMessage.MessageType.ENTER)) {
             sessions.add(session);
@@ -32,8 +32,8 @@ public class ChatRoom {
     }
 
     private <T> void sendMassage(T message, ChatService chatService) {
-        sessions.parallelStream()
-                .forEach(session -> chatService.sendMessage(session, message));
+        sessions.parallelStream()// parallelStream을 사용하여 병렬 스트림으로 모든 세션에 대해 메시지를 전송합니다.
+                .forEach(session -> chatService.sendMessage(session, message));//세션별 메시지를 전송
 
     }
 }

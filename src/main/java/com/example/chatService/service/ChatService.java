@@ -45,7 +45,7 @@ public class ChatService {
 
     public <T> void sendMessage(WebSocketSession session, T message) {
         try {
-            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(message)));
+            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(message)));//직렬화
 
         } catch (IOException e) {
             log.error(e.getMessage(),e);

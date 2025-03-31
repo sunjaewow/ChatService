@@ -26,8 +26,9 @@ public class WebSockChatHandler extends TextWebSocketHandler {
         log.info("payload {}", payload);
 
         ChatMessage chatMessage = objectMapper.readValue(payload, ChatMessage.class);
+        //readValue는 클라이언트가 입력한 메시지를 ChatMessage로 변환하는 과정.
         ChatRoom room = chatService.findRoomById(chatMessage.getRoomId());
-        room.handlerActions(session, chatMessage, chatService);
+        room.handlerActions(session, chatMessage, chatService);//메시지 처리
 
     }
 }
