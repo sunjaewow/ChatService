@@ -1,7 +1,7 @@
-package com.example.chatService.controller;
+package com.example.chatService.websocket.controller;
 
-import com.example.chatService.dto.ChatRoom;
-import com.example.chatService.service.ChatService;
+import com.example.chatService.websocket.dto.ChatRoom;
+import com.example.chatService.websocket.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

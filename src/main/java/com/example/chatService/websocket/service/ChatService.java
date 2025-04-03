@@ -1,6 +1,6 @@
-package com.example.chatService.service;
+package com.example.chatService.websocket.service;
 
-import com.example.chatService.dto.ChatRoom;
+import com.example.chatService.websocket.dto.ChatRoom;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +37,7 @@ public class ChatService {
         String randomId = UUID.randomUUID().toString();
         ChatRoom chatRoom = ChatRoom.builder()
                 .roomId(randomId)
-                .name(name)
+//                .name(name)
                 .build();
         chatRooms.put(randomId, chatRoom);
         return chatRoom;

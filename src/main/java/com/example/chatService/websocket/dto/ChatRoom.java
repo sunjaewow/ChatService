@@ -1,6 +1,6 @@
-package com.example.chatService.dto;
+package com.example.chatService.websocket.dto;
 
-import com.example.chatService.service.ChatService;
+import com.example.chatService.websocket.service.ChatService;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.web.socket.WebSocketSession;

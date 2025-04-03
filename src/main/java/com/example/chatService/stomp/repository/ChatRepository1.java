@@ -1,6 +1,5 @@
 package com.example.chatService.stomp.repository;
 
-import com.example.chatService.dto.ChatRoom;
 import com.example.chatService.stomp.dto.ChatRoom1;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;

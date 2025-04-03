@@ -1,0 +1,8 @@
+spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+
+  data:
+    mongodb:
+      uri: mongodb+srv://chltjswo:fpdlswj365@mycluster.zzoydp8.mongodb.net/chat?retryWrites=true&w=majority&appName=myCluster
