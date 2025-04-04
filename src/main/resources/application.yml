@@ -6,3 +6,17 @@ spring:
   data:
     mongodb:
       uri: mongodb+srv://chltjswo:fpdlswj365@mycluster.zzoydp8.mongodb.net/chat?retryWrites=true&w=majority&appName=myCluster
+
+  datasource:
+    url : jdbc:mysql://127.0.0.1:3306/chat?UseUnicode=true&serverTimezone=Asia/Seoul
+    username : root
+    password: fpdlswj365
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+    database-platform: org.hibernate.dialect.MySQL8Dialect
