@@ -4,17 +4,16 @@ import com.example.chatService.chat.domain.ChatMessage3;
 import com.example.chatService.chat.domain.ChatRoom;
 import com.example.chatService.chat.domain.Member;
 import com.example.chatService.chat.dto.CreateChatDto;
+import com.example.chatService.chat.redis.RedisPublisher;
 import com.example.chatService.chat.repository.ChatMessage3Repository;
 import com.example.chatService.chat.repository.ChatRepository;
 import com.example.chatService.chat.repository.MemberRepository;
-import com.example.chatService.stomp.dto.ChatRoom1;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -24,11 +23,15 @@ public class ChatService1 {
     private final ChatMessage3Repository chatMessage3Repository;
     private final RedisTemplate<String, Object> redisTemplate;
     private final ChannelTopic channelTopic;
+    private final RedisPublisher redisPublisher;
 
     public void sendMessage(ChatMessage3 chatMessage3) {
         if (chatMessage3.getType() == ChatMessage3.MessageType.ENTER) {
             chatMessage3.setMessage(chatMessage3.getSenderName() + "님이 입장하셨습니다.");
+        } else if (chatMessage3.getType() == ChatMessage3.MessageType.LEAVE) {
+            chatMessage3.setMessage(chatMessage3.getMessage() + "님이 나가셨습니다.");
         }
+        redisPublisher.publish(chatMessage3);
         chatMessage3Repository.save(chatMessage3);
         redisTemplate.convertAndSend(channelTopic.getTopic(), chatMessage3);
     }

@@ -52,7 +52,7 @@ public class RedisConfig2 {
     }
     @Bean
     public MessageListenerAdapter listenerAdapter(RedisSubscriber subscriber) {
-        return new MessageListenerAdapter(subscriber, "sendMessage");
+        return new MessageListenerAdapter(subscriber, "sendMessage");//여기서 sub이 사용됨.
     }
 }
 

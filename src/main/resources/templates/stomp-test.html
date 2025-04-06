@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>STOMP WebSocket Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+</head>
+<body>
+<h2>STOMP WebSocket Test</h2>
+
+<label>Room ID: <input id="roomId" value="1" /></label><br />
+<label>Message: <input id="message" value="Hello STOMP!" /></label><br />
+<button onclick="connect()">Connect & Subscribe</button>
+<button onclick="sendMessage()">Send Message</button>
+
+<pre id="log" style="background:#f4f4f4; padding:10px;"></pre>
+
+<script>
+    let stompClient = null;
+
+    function log(message) {
+        document.getElementById("log").textContent += message + "\n";
+    }
+
+    function connect() {
+        const socket = new SockJS("http://localhost:8080/ws-stomp");
+        stompClient = Stomp.over(socket);
+        stompClient.debug = null; // console log 끄기
+
+        stompClient.connect({}, () => {
+            const roomId = document.getElementById("roomId").value;
+            stompClient.subscribe(`/sub/chat/room/${roomId}`, (message) => {
+                log("[받은 메시지] " + message.body);
+            });
+            log("✅ STOMP 연결 완료 및 구독 성공");
+        }, (error) => {
+            log("❌ 연결 실패: " + error);
+        });
+    }
+
+    function sendMessage() {
+        const roomId = document.getElementById("roomId").value;
+        const msg = document.getElementById("message").value;
+
+        stompClient.send(`/pub/chat/message`, {}, JSON.stringify({
+            roomId: roomId,
+            sender: "tester",
+            message: msg,
+            type: "TALK"
+        }));
+        log("[보낸 메시지] " + msg);
+    }
+</script>
+</body>
+</html>
