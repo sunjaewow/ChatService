@@ -44,8 +44,8 @@
         const msg = document.getElementById("message").value;
 
         stompClient.send(`/pub/chat/message`, {}, JSON.stringify({
-            roomId: roomId,
-            sender: "tester",
+            chatRoomId: roomId,     // ✅ 서버 필드명에 맞게 수정
+            senderName: "tester",   // ✅ sender → senderName
             message: msg,
             type: "TALK"
         }));
