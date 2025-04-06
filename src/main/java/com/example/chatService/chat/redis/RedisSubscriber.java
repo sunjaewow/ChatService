@@ -11,15 +11,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class RedisSubscriber {
     private final SimpMessagingTemplate messagingTemplate;
+    private final ObjectMapper objectMapper;
 
-    public void sendMessage(String message) throws JsonProcessingException {
+    public void sendMessage(String message) {
         try {
-            ChatMessage3 chatMessage3 = new ObjectMapper().readValue(message, ChatMessage3.class);
-            messagingTemplate.convertAndSend("/topic/chat/" + chatMessage3.getChatRoomId(), chatMessage3);
+            ChatMessage3 chatMessage3 = objectMapper.readValue(message, ChatMessage3.class);
+            messagingTemplate.convertAndSend("/sub/chat/" + chatMessage3.getChatRoomId(), chatMessage3);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 }
+
 
 
