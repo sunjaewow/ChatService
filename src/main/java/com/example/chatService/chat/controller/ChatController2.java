@@ -2,6 +2,7 @@ package com.example.chatService.chat.controller;
 
 import com.example.chatService.chat.domain.ChatMessage3;
 import com.example.chatService.chat.domain.ChatRoom;
+import com.example.chatService.chat.dto.ChatMessageDto;
 import com.example.chatService.chat.dto.CreateChatDto;
 import com.example.chatService.chat.redis.RedisPublisher;
 import com.example.chatService.chat.service.ChatService1;
@@ -28,5 +29,11 @@ public class ChatController2 {
     @PostMapping
     private ChatRoom createChatRoom(@RequestBody CreateChatDto createChatDto) {
         return chatService1.chatRoom(createChatDto);
+    }
+
+    @GetMapping("/{chatRoomId}")
+    private ChatMessageDto getChatRoomMessages(@PathVariable Long chatRoomId,@RequestParam(defaultValue = "0") int page) {
+        return chatService1.getChatMessages(chatRoomId, page);
+
     }
 }
