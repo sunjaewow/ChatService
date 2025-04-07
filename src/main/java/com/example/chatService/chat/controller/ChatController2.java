@@ -4,6 +4,7 @@ import com.example.chatService.chat.domain.ChatMessage3;
 import com.example.chatService.chat.domain.ChatRoom;
 import com.example.chatService.chat.dto.ChatMessageDto;
 import com.example.chatService.chat.dto.CreateChatDto;
+import com.example.chatService.chat.dto.GetChatListResponseDto;
 import com.example.chatService.chat.redis.RedisPublisher;
 import com.example.chatService.chat.service.ChatService1;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class ChatController2 {
     private final ChatService1 chatService1;
 
     @GetMapping
-    private List<ChatRoom> getChatRoom(@RequestParam Long memberId) {
+    private List<GetChatListResponseDto> getChatRoom(@RequestParam Long memberId) {
         return chatService1.getChat(memberId);
     }
 
@@ -34,6 +35,5 @@ public class ChatController2 {
     @GetMapping("/{chatRoomId}")
     private ChatMessageDto getChatRoomMessages(@PathVariable Long chatRoomId,@RequestParam(defaultValue = "0") int page) {
         return chatService1.getChatMessages(chatRoomId, page);
-
     }
 }
