@@ -35,5 +35,5 @@ public class ChatMessage3 {
     private String message;
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
-    private LocalDateTime localDateTime=LocalDateTime.now();
+    private LocalDateTime localDateTime = LocalDateTime.now();
 }

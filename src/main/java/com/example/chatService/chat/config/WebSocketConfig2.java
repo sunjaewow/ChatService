@@ -9,18 +9,18 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 @Configuration
-@EnableWebSocketMessageBroker
+@EnableWebSocketMessageBroker//stomp기반 websocket 메시지 브로커를 활성화
 @RequiredArgsConstructor
 public class WebSocketConfig2 implements WebSocketMessageBrokerConfigurer {
 
-    private final StompHandler stompHandler;
+    private final StompHandler stompHandler;//jwt토큰인증 방식이면 이걸로.
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/sub");
-        config.setApplicationDestinationPrefixes("/pub");
+        config.enableSimpleBroker("/sub");//구독
+        config.setApplicationDestinationPrefixes("/pub");//발행 prefix
     }
 
-    @Override
+    @Override//cors
     public void registerStompEndpoints(StompEndpointRegistry registry) {
 
         registry.addEndpoint("/ws-stomp")

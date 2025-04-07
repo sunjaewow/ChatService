@@ -20,7 +20,6 @@ public class ChatController2 {
 
     private final ChatService1 chatService1;
 
-
     @GetMapping
     private List<ChatRoom> getChatRoom(@RequestParam Long memberId) {
         return chatService1.getChat(memberId);

@@ -13,7 +13,7 @@ public class ChattingController {
 
     private final ChatService1 chatService1;
 
-    @MessageMapping("/chat/message")
+    @MessageMapping("/chat/message")//@RequestMapping 의 websocket 버전.
     public void message(ChatMessage3 message) {
         chatService1.sendMessage(message); //RedisPublisher 호출
 
