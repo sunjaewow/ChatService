@@ -8,6 +8,7 @@ import com.example.chatService.chat.dto.GetChatListResponseDto;
 import com.example.chatService.chat.redis.RedisPublisher;
 import com.example.chatService.chat.service.ChatService1;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -33,7 +34,14 @@ public class ChatController2 {
     }
 
     @GetMapping("/{chatRoomId}")
-    private ChatMessageDto getChatRoomMessages(@PathVariable Long chatRoomId,@RequestParam(defaultValue = "0") int page) {
-        return chatService1.getChatMessages(chatRoomId, page);
+    private ChatMessageDto getChatRoomMessages(@PathVariable Long chatRoomId,
+                                               @RequestParam(defaultValue = "0") int page,
+                                               @RequestParam Long memberId) {
+        return chatService1.getChatMessages(chatRoomId, memberId, page);
+    }
+
+    @DeleteMapping("/{chatRoomId}")
+    private ResponseEntity<?> deleteChatRoom(@PathVariable Long chatRoomId) {
+        return chatService1.deleteChatRoom(chatRoomId);
     }
 }

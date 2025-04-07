@@ -11,4 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface ChatMessage3Repository extends MongoRepository<ChatMessage3, String> {
     Page<ChatMessage3> findByChatRoomId(Long chatRoomId, Pageable pageable);
 
+    void deleteByChatRoomId(Long chatRoomId);
+
 }

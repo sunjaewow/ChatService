@@ -16,6 +16,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -50,7 +53,7 @@ public class ChatService1 {
             Long chatRoomId = chatRoom.getChatRoomId();
             String lastMessage =  redisTemplate.opsForValue().get("chat:lastMessage" + chatRoomId);
             String lastMessageTime = redisTemplate.opsForValue().get("chat:lastMessageTime" + chatRoomId);
-            String unReadCount =  redisTemplate.opsForValue().get("unread:" + chatRoomId + ":" + memberId);
+            String unReadCount =  redisTemplate.opsForValue().get("unRead:" + chatRoomId + ":" + memberId);
             Long count = unReadCount != null ? Long.parseLong(unReadCount) : 0L;
             GetChatListResponseDto dto = GetChatListResponseDto.builder()
                     .chatRoom(chatRoom)
@@ -66,10 +69,24 @@ public class ChatService1 {
 
 
     @Transactional
-    public ChatMessageDto getChatMessages(Long chatRoomId,int page) {
+    public ChatMessageDto getChatMessages(Long chatRoomId,Long memberId, int page) {
         chatRepository.findById(chatRoomId).orElseThrow(() -> new RuntimeException("채팅방 없음."));
         Pageable pageable = PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC,"localDateTime"));//페이징 처리.
         Page<ChatMessage3> pageResult = chatMessage3Repository.findByChatRoomId(chatRoomId, pageable);
+        String key = "unRead:" + chatRoomId + ":" + memberId;
+        redisTemplate.delete(key);
         return new ChatMessageDto(chatRoomId, pageResult.getContent());
+    }
+
+    @Transactional
+    public ResponseEntity<?> deleteChatRoom(Long chatRoomId) {
+        Optional<ChatRoom> chatRoom = chatRepository.findById(chatRoomId);
+        if (chatRoom.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("채탕빙 없음");
+        }
+
+        chatRepository.deleteById(chatRoomId);
+        chatMessage3Repository.deleteByChatRoomId(chatRoomId);
+        return ResponseEntity.ok().build();
     }
 }
