@@ -12,6 +12,7 @@ import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
@@ -33,6 +34,7 @@ public class RedisConfig2 {
         redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(ChatMessage3.class));//(역)직렬화
         return redisTemplate;
     }
+
     @Bean//채널 명을 지정.
     public ChannelTopic channelTopic() {
         return new ChannelTopic("chatroom");
@@ -46,6 +48,7 @@ public class RedisConfig2 {
         container.addMessageListener(listenerAdapter, channelTopic());//채널 구독하고 listneradapter가 처리.
         return container;
     }
+
     @Bean
     public MessageListenerAdapter listenerAdapter(RedisSubscriber subscriber) {
         return new MessageListenerAdapter(subscriber, "sendMessage");//여기서 sub이 사용됨.

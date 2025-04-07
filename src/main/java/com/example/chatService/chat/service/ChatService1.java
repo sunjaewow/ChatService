@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +31,7 @@ public class ChatService1 {
     private final ChatRepository chatRepository;
     private final MemberRepository memberRepository;
     private final ChatMessage3Repository chatMessage3Repository;
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final StringRedisTemplate redisTemplate;
 
     @Transactional
     public ChatRoom chatRoom(CreateChatDto createChatDto) {
@@ -41,21 +42,21 @@ public class ChatService1 {
         return chatRepository.save(chatRoom);
     }
 
-    @Transactional(readOnly = true)//redis에서 꺼내와야할듯.
+    @Transactional()//redis에서 꺼내와야할듯.
     public List<GetChatListResponseDto> getChat(Long memberId) {
         List<ChatRoom> chatRoomList = chatRepository.findAllByMemberId(memberId);
         List<GetChatListResponseDto> listResponseDtos = new ArrayList<>();
         for (ChatRoom chatRoom : chatRoomList) {
             Long chatRoomId = chatRoom.getChatRoomId();
-            String lastMessage = (String) redisTemplate.opsForValue().get("chat:lastMessage" + chatRoomId);
-            LocalDateTime lastMessageTime = (LocalDateTime) redisTemplate.opsForValue().get("chat:lastMessageTime" + chatRoomId);
-            Long unReadCount = (Long) redisTemplate.opsForValue().get("unread:" + chatRoomId + ":" + memberId);
-
+            String lastMessage =  redisTemplate.opsForValue().get("chat:lastMessage" + chatRoomId);
+            String lastMessageTime = redisTemplate.opsForValue().get("chat:lastMessageTime" + chatRoomId);
+            String unReadCount =  redisTemplate.opsForValue().get("unread:" + chatRoomId + ":" + memberId);
+            Long count = unReadCount != null ? Long.parseLong(unReadCount) : 0L;
             GetChatListResponseDto dto = GetChatListResponseDto.builder()
                     .chatRoom(chatRoom)
                     .lastMessage(lastMessage)
                     .lastMessageLocalDateTime(lastMessageTime)
-                    .unReadCount(unReadCount)
+                    .unReadCount(count)
                     .build();
             listResponseDtos.add(dto);
         }

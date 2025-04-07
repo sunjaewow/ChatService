@@ -7,27 +7,31 @@ import com.example.chatService.chat.dto.ChatRoomUpdateDto;
 import com.example.chatService.chat.repository.ChatRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
 public class RedisSubscriber {
     private final SimpMessagingTemplate messagingTemplate;//spring이 제공하는 stomp메시지 전송 도구.
     private final ObjectMapper objectMapper;
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final StringRedisTemplate redisTemplate;
     private final ChatRepository chatRepository;
 
+    @Transactional
     public void sendMessage(String message) {//메시지를 받고 역직렬화 하고 roomID로 메시지를 뿌림.
         try {
             ChatMessage3 chatMessage3 = objectMapper.readValue(message, ChatMessage3.class);//역직렬화.
+            messagingTemplate.convertAndSend("/sub/chat/" + chatMessage3.getChatRoomId(), chatMessage3);
             redisTemplate.opsForValue().set("chat:lastMessage" + chatMessage3.getChatRoomId(), chatMessage3.getMessage());
-            redisTemplate.opsForValue().set("chat:lastMessageTime"+chatMessage3.getChatRoomId(),chatMessage3.getLocalDateTime());
+            redisTemplate.opsForValue().set("chat:lastMessageTime"+chatMessage3.getChatRoomId(),chatMessage3.getLocalDateTime().toString());
             ChatRoom chatRoom = chatRepository.findById(chatMessage3.getChatRoomId()).orElseThrow(() -> new RuntimeException("채팅방 없음"));
             Map<Long, Long> unReadMap = new HashMap<>();
             for (Member member : chatRoom.getMembers()) {
@@ -46,7 +50,6 @@ public class RedisSubscriber {
                     .build();
 
 
-            messagingTemplate.convertAndSend("/sub/chat/" + chatMessage3.getChatRoomId(), chatMessage3);
             messagingTemplate.convertAndSend("/sub/chat/update"+chatMessage3.getChatRoomId(),chatRoomUpdateDto);
 
         } catch (Exception e) {

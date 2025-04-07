@@ -18,5 +18,5 @@ public class GetChatListResponseDto {
 
     private Long unReadCount;
 
-    private LocalDateTime lastMessageLocalDateTime;
+    private String lastMessageLocalDateTime;
 }
