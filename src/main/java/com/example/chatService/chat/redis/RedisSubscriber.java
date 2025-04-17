@@ -28,6 +28,8 @@ public class RedisSubscriber {
         try {
             ChatMessage3 chatMessage3 = objectMapper.readValue(message, ChatMessage3.class);//역직렬화.
             messagingTemplate.convertAndSend("/sub/chat/" + chatMessage3.getChatRoomId(), chatMessage3);
+            //알림 서비스 로직 구현해야됨.
+
             redisTemplate.opsForValue().set("chat:lastMessage" + chatMessage3.getChatRoomId(), chatMessage3.getMessage());
             redisTemplate.opsForValue().set("chat:lastMessageTime"+chatMessage3.getChatRoomId(),chatMessage3.getLocalDateTime().toString());
             ChatRoom chatRoom = chatRepository.findById(chatMessage3.getChatRoomId()).orElseThrow(() -> new RuntimeException("채팅방 없음"));
