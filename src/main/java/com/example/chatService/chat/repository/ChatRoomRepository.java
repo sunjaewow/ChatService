@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface ChatRepository extends JpaRepository<ChatRoom, Long> {
+public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 
     @Query("select c from ChatRoom c join c.members m where m.memberId=:memberId")
     List<ChatRoom> findAllByMemberId(@Param("memberId") Long memberId);

@@ -12,9 +12,9 @@ public class RedisPublisher {
 
     private final ChannelTopic channelTopic;
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, Object> chatRedisTemplate;
 
     public void publish(ChatMessage3 chatMessage3) {
-        redisTemplate.convertAndSend(channelTopic.getTopic(), chatMessage3);
+        chatRedisTemplate.convertAndSend(channelTopic.getTopic(), chatMessage3);
     }
 }

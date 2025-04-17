@@ -7,7 +7,7 @@ import com.example.chatService.chat.dto.ChatMessageDto;
 import com.example.chatService.chat.dto.CreateChatDto;
 import com.example.chatService.chat.dto.GetChatListResponseDto;
 import com.example.chatService.chat.repository.ChatMessage3Repository;
-import com.example.chatService.chat.repository.ChatRepository;
+import com.example.chatService.chat.repository.ChatRoomRepository;
 import com.example.chatService.chat.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,12 +24,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 
 public class ChatService1 {
-    private final ChatRepository chatRepository;
+    private final ChatRoomRepository chatRepository;
     private final MemberRepository memberRepository;
     private final ChatMessage3Repository chatMessage3Repository;
     private final StringRedisTemplate redisTemplate;
@@ -87,4 +88,15 @@ public class ChatService1 {
         chatMessage3Repository.deleteByChatRoomId(chatRoomId);
         return ResponseEntity.ok().build();
     }
+
+    public List<Long> getParticipantIds(Long chatRoomId) {
+        ChatRoom chatRoom = chatRepository.findById(chatRoomId)
+                .orElseThrow(() -> new RuntimeException("채팅방이 없음"));
+
+        return chatRoom.getMembers()
+                .stream()
+                .map(Member::getMemberId)
+                .collect(Collectors.toList());
+    }
+
 }

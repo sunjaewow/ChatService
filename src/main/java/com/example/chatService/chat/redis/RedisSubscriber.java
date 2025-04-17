@@ -4,7 +4,7 @@ import com.example.chatService.chat.domain.ChatMessage3;
 import com.example.chatService.chat.domain.ChatRoom;
 import com.example.chatService.chat.domain.Member;
 import com.example.chatService.chat.dto.ChatRoomUpdateDto;
-import com.example.chatService.chat.repository.ChatRepository;
+import com.example.chatService.chat.repository.ChatRoomRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -21,7 +21,7 @@ public class RedisSubscriber {
     private final SimpMessagingTemplate messagingTemplate;//spring이 제공하는 stomp메시지 전송 도구.
     private final ObjectMapper objectMapper;
     private final StringRedisTemplate redisTemplate;
-    private final ChatRepository chatRepository;
+    private final ChatRoomRepository chatRepository;
 
     @Transactional
     public void sendMessage(String message) {//메시지를 받고 역직렬화 하고 roomID로 메시지를 뿌림.
